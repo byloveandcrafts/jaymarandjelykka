@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Joven &amp; Abegail — Save the Date</title>
+<title>Jaymar &amp; Jellykka — Save the Date</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -335,7 +335,7 @@
   .principal-table tbody tr:hover td { background:var(--beige); }
 
   .sponsors-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--gold-line); border:1px solid var(--gold-line); margin-top:2.5rem; }
-  .sponsor-item { background:var(--warm-white); padding:1.5rem 1.8rem; transition:background .25s; }
+  .sponsor-item { background:var(--warm-white); padding:1.5rem 1.8rem; transition:background .25s; text-align:center; }
   .sponsor-item:hover { background:var(--beige); }
   .sponsor-type { font-size:.72rem; letter-spacing:.28em; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:.4rem; }
   .sponsor-names { font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:var(--text); line-height:1.7; }
@@ -363,8 +363,8 @@
   .venue-card-label { font-size:.7rem; letter-spacing:.38em; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:.6rem; }
   .venue-name { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:300; color:var(--text); margin-bottom:.3rem; line-height:1.2; }
   .venue-addr { font-size:.88rem; line-height:1.9; color:var(--text-mid); border-left:2px solid var(--gold-line); padding-left:1rem; margin-bottom:1.5rem; }
-  .venue-map { height:220px; overflow:hidden; border:1px solid var(--gold-line); }
-  .venue-map iframe { width:100%; height:100%; border:none; filter:sepia(15%) saturate(70%); }
+  .venue-map { height:220px; overflow:hidden; border:1px solid var(--gold-line); position:relative; }
+  .venue-map iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; filter:sepia(15%) saturate(70%); }
   .btn-gold {
     display:inline-block; padding:.7rem 1.8rem;
     border:1px solid var(--gold); color:var(--text);
@@ -429,16 +429,17 @@
     background:var(--beige-dark);
     border:1px solid var(--gold-line);
     transition:transform .25s, box-shadow .25s;
+    display:flex; align-items:center; justify-content:center;
   }
   .gal-cell:hover { transform:translateY(-3px); box-shadow:0 8px 28px rgba(0,0,0,.15); }
   /* Portrait cells */
   .gal-cell.portrait { width:200px; height:280px; }
-  /* Landscape cells */
-  .gal-cell.landscape { width:380px; height:240px; }
+  /* Landscape cells — same height as portrait */
+  .gal-cell.landscape { width:380px; height:280px; }
 
   .gal-cell img {
-    width:100%; height:100%; object-fit:cover;
-    display:block; transition:transform .4s;
+    width:100%; height:100%;
+    object-fit:cover;
   }
   .gal-cell:hover img { transform:scale(1.05); }
 
@@ -516,7 +517,7 @@
     .gal-strip-wrap { margin:0 -1rem; }
     .gal-strip { padding:0 1rem 1rem; gap:8px; }
     .gal-cell.portrait { width:150px; height:210px; }
-    .gal-cell.landscape { width:270px; height:180px; }
+    .gal-cell.landscape { width:270px; height:210px; }
     .lb-prev { left:.4rem; padding:.5rem .7rem; }
     .lb-next { right:.4rem; padding:.5rem .7rem; }
   }
@@ -591,6 +592,172 @@
   .footer-date { font-size:.78rem; letter-spacing:.28em; text-transform:uppercase; color:rgba(255,255,255,.28); display:block; margin-bottom:1.8rem; }
   .footer-rule { width:32px; height:1px; background:rgba(184,150,106,0.3); margin:0 auto 1.2rem; }
   .footer-note { font-size:.82rem; color:rgba(255,255,255,.28); letter-spacing:.1em; }
+
+   /* --- ENVELOPE OVERLAY --- */
+  /* ── ENVELOPE OVERLAY ── */
+  #envelope-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--beige-dark);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: opacity 1s ease, visibility 1s ease;
+  }
+  #envelope-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  /* The wrapper is the envelope body */
+  .envelope {
+    position: relative;
+    width: 320px;
+    height: 220px;
+    cursor: pointer;
+    perspective: 1000px;
+  }
+  .envelope:hover { transform: translateY(-4px); transition: transform 0.3s ease; }
+
+  /* Back panel — the envelope base color */
+  .env-back {
+    position: absolute;
+    inset: 0;
+    background: var(--nude-dark);
+    border-radius: 2px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.18);
+  }
+
+  /* The letter — sits at z-index 1, strictly BEHIND the front face */
+  .letter {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    height: 200px; /* Taller than envelope so the top is hidden behind the front */
+    background: var(--warm-white);
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 1;
+    transition: transform 0.8s ease;
+  }
+  .envelope.open .letter {
+    transform: translateY(-110px);
+  }
+
+  .letter-names {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-mid);
+    line-height: 1.1;
+    margin-bottom: 5px;
+  }
+  .letter-sub {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--text-light);
+  }
+
+  /* The solid front face (left + right + bottom triangles as one element) */
+  .env-front {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-left:   160px solid var(--nude);
+    border-right:  160px solid var(--nude);
+    border-bottom: 110px solid var(--nude-deep);
+    border-top:    110px solid transparent;
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  /* Top flap — folds open */
+  .env-flap {
+    position: absolute;
+    top: 0; left: 0;
+    width: 0; height: 0;
+    z-index: 3;
+    border-left:  160px solid transparent;
+    border-right: 160px solid transparent;
+    border-top:   115px solid var(--beige);
+    transform-origin: top;
+    transition: transform 0.6s ease, z-index 0s 0.3s;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1));
+  }
+  .envelope.open .env-flap {
+    transform: rotateX(180deg);
+    z-index: 0; /* Drops behind letter once open */
+  }
+
+  /* Wax seal */
+  .seal {
+    position: absolute;
+    top: 115px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 55px;
+    height: 55px;
+    background: #8B1111;
+    border-radius: 50%;
+    z-index: 4;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.4), 0 3px 6px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold-bright);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .envelope.open .seal {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.4);
+  }
+
+  /* Tap hint text */
+  .envelope-text {
+    position: absolute;
+    bottom: -45px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    transition: opacity 0.3s;
+    animation: pulse 2s infinite;
+  }
+  .envelope.open .envelope-text { opacity: 0; }
+
+  @media (max-width: 400px) {
+    .envelope { width: 280px; height: 190px; }
+    .env-front {
+      border-left: 140px solid var(--nude);
+      border-right: 140px solid var(--nude);
+      border-bottom: 95px solid var(--nude-deep);
+    }
+    .env-flap {
+      border-left: 140px solid transparent;
+      border-right: 140px solid transparent;
+      border-top: 100px solid var(--beige);
+    }
+    .seal { top: 100px; width: 48px; height: 48px; font-size: 1.1rem; }
+    .letter-names { font-size: 1.5rem; }
+  }
+
 
   /* ANIMATIONS */
   @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
@@ -667,6 +834,23 @@
 </head>
 <body>
 
+    <div id="envelope-overlay">
+  <div class="envelope" id="envelope-trigger">
+    <div class="env-back"></div>
+
+    <div class="letter">
+      <div class="letter-names">Jaymar & Jellykka</div>
+      <div class="letter-sub">Save the Date</div>
+    </div>
+
+    <div class="env-front"></div>
+    <div class="env-flap"></div>
+
+    <div class="seal"><span>J&J</span></div>
+    <div class="envelope-text">Click to Open & Play Music</div>
+  </div>
+</div>
+
 <!-- NAV -->
 <nav>
   <span class="nav-monogram">J &amp; A</span>
@@ -706,9 +890,9 @@
     <span class="hero-tag">Save the Date · Wedding Invitation</span>
     <p class="hero-eyebrow">You are invited to celebrate</p>
     <h1 class="hero-names">
-      <span class="hero-name">Joven</span>
+      <span class="hero-name">Jaymar</span>
       <span class="hero-amp">&amp;</span>
-      <span class="hero-name">Abegail</span>
+      <span class="hero-name">Jellykka</span>
     </h1>
     <div class="hero-ornament">
       <div class="orn-line r"></div>
@@ -731,25 +915,33 @@
 <!-- ABOUT US -->
 <section id="about">
   <div class="s-wrap">
-    <div class="s-head">
-      <span class="s-tag reveal">The Couple</span>
-      <h2 class="s-title reveal d1">About <em>Us</em></h2>
-      <div class="s-rule reveal d2"></div>
-    </div>
+   <div class="s-head">
+    <span class="s-tag reveal">The Couple</span>
+    <h2 class="s-title reveal d1">About <em>Us</em></h2>
+    <div class="s-rule reveal d2"></div>
+    <p>
+      <br>
+      It all began in Uptown back in 2018, where two ordinary days turned into something extraordinary. We were both just working then, not knowing that we were about to build a life together.<br><br>
+      A year later, our love grew into something even more beautiful as we welcomed our firstborn, our baby boy, Jaykkylle, our greatest blessing and the start of our little family. Five years after, our hearts expanded once more with the arrival of our baby girl, Quinn, completing the love we never knew we needed.<br><br>
+      Through the years, we've faced life hand in hand—growing, learning, and choosing each other every single day. After seven wonderful years, he asked for my father's blessing, and in January 2025, he proposed and asked me to spend forever with him.<br><br>
+      And of course, I said yes, to a lifetime of love, laughter, and everything in between.
+    </p>
+  </div>
     <div class="about-grid">
       <!-- BRIDE -->
       <div class="about-person reveal">
         <div class="about-photo-wrap">
           <div class="about-photo-placeholder">
             <svg width="48" height="48" fill="none" stroke="#B8966A" stroke-width="1.2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            <img src="1.jpg" alt="Photo 1">
           </div>
         </div>
         <span class="about-role">The Bride</span>
-        <p class="about-name">Abegail Dela Cruz</p>
+        <p class="about-name">Jellykka Rucio</p>
         <div class="about-parents">
           <strong>Bride's Parents</strong>
-          Father &nbsp; Mr. Domingo Dela Cruz<br>
-          Mother &nbsp; Mrs. Aida Dela Cruz
+          Father &nbsp; Mr. Nelson Rucio<br>
+          Mother &nbsp; Mrs. Hilda Lapuz
         </div>
       </div>
       <!-- DIVIDER -->
@@ -764,15 +956,16 @@
       <div class="about-person reveal d2">
         <div class="about-photo-wrap">
           <div class="about-photo-placeholder">
+            <img src="2.jpg" alt="Photo 1">
             <svg width="48" height="48" fill="none" stroke="#B8966A" stroke-width="1.2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
           </div>
         </div>
         <span class="about-role">The Groom</span>
-        <p class="about-name">Joven Noquiz</p>
+        <p class="about-name">Jayma Tormesr</p>
         <div class="about-parents">
           <strong>Groom's Parents</strong>
-          Father &nbsp; Mr. Rizaldy Noquiz<br>
-          Mother &nbsp; Mrs. Rosalinda Noquiz
+          Father &nbsp; Mr. Jean Tormes<br>
+          Mother &nbsp; Mrs. Marcial Tormes
         </div>
       </div>
     </div>
@@ -781,14 +974,126 @@
   </div>
 </section>
 
-<!-- HASHTAG -->
-<section id="hashtag" style="padding:2.5rem 1.5rem;">
-  <div class="hashtag-inner">
-    <span class="hashtag-label">Our Wedding Hashtag</span>
-    <span class="hashtag-text">#JovenAndAbegail2026</span>
-    <p class="hashtag-note">Tag your photos so we can see every beautiful moment! 📸</p>
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="s-wrap">
+    <div class="s-head">
+      <span class="s-tag reveal">Captured Moments</span>
+      <h2 class="s-title reveal d1">Our <em>Gallery</em></h2>
+      <div class="s-rule reveal d2"></div>
+    </div>
+
+    <div class="gal-strip-wrap reveal">
+      <div class="gal-strip" id="galStrip">
+
+        <!-- PHOTO 1 — Portrait -->
+        <div class="gal-cell portrait" onclick="openLb(0)">
+          <!-- Replace below with: <img src="your-photo.jpg" alt="Photo 1"> -->
+          <div class="gal-ph">
+            <img src="9.jpg" alt="Photo 1">
+            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          </div>
+          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
+        </div>
+
+        <!-- PHOTO 2 — Landscape -->
+        <div class="gal-cell portrait" onclick="openLb(1)">
+          <div class="gal-ph">
+            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <img src="3.jpg" alt="Photo 2">
+          </div>
+          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
+        </div>
+
+        <!-- PHOTO 3 — Portrait -->
+        <div class="gal-cell portrait" onclick="openLb(2)">
+          <div class="gal-ph">
+            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <img src="6.jpg" alt="Photo 3">
+          </div>
+          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
+        </div>
+
+        <!-- PHOTO 4 — Landscape -->
+        <div class="gal-cell landscape" onclick="openLb(3)">
+          <div class="gal-ph">
+            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <img src="5.jpg" alt="Photo 4">
+          </div>
+          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
+        </div>
+
+        <!-- PHOTO 5 — Portrait -->
+        <div class="gal-cell portrait" onclick="openLb(4)">
+          <div class="gal-ph">
+            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <img src="12.jpg" alt="Photo 5">
+          </div>
+          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
+        </div>
+
+        <!-- PHOTO 6 — Landscape -->
+        <div class="gal-cell portrait" onclick="openLb(5)">
+          <div class="gal-ph">
+            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <img src="10.jpg" alt="Photo 6">
+          </div>
+          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
+        </div>
+
+        <!-- PHOTO 7 — Portrait -->
+        <div class="gal-cell portrait" onclick="openLb(6)">
+          <div class="gal-ph">
+            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <img src="7.jpg" alt="Photo 7">
+          </div>
+          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
+        </div>
+
+        <!-- PHOTO 8 — Landscape -->
+        <div class="gal-cell landscape" onclick="openLb(7)">
+          <div class="gal-ph">
+            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <img src="11.jpg" alt="Photo 8">
+          </div>
+          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
+        </div>
+
+        <!-- PHOTO 9 — Portrait -->
+        <div class="gal-cell portrait" onclick="openLb(8)">
+          <div class="gal-ph">
+            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            <img src="8.jpg" alt="Photo 9">
+          </div>
+          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
+        </div>
+
+      </div><!-- end gal-strip -->
+    </div><!-- end gal-strip-wrap -->
+
+    <div class="gal-arrows">
+      <button class="gal-arrow" id="galPrev" onclick="galScroll(-1)" aria-label="Previous">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="gal-arrow" id="galNext" onclick="galScroll(1)" aria-label="Next">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+    <div class="gal-dots" id="galDots"></div>
+    <p class="gal-caption reveal">Photos will be updated closer to the big day <span>✦</span></p>
   </div>
 </section>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" role="dialog" aria-modal="true">
+  <button class="lb-close" onclick="closeLb()" aria-label="Close">×</button>
+  <button class="lb-prev" onclick="lbNav(-1)" aria-label="Previous">&#8249;</button>
+  <img id="lb-img" src="" alt="Gallery photo">
+  <button class="lb-next" onclick="lbNav(1)" aria-label="Next">&#8250;</button>
+  <span class="lb-counter" id="lb-counter"></span>
+</div>
+
+
 
 <!-- ENTOURAGE -->
 <section id="entourage">
@@ -799,27 +1104,38 @@
       <div class="s-rule reveal d2"></div>
     </div>
 
-    <!-- PARENTS — 2 col, left & right -->
-    <div class="ent-section">
-      <span class="ent-label">Parents of the Couple</span>
-      <div class="ent-parents reveal">
-        <div class="ent-family-card">
-          <span class="ent-family-label">Parents of the Bride</span>
-          <p class="ent-name">
-            <span>Hilda Lapuz</span>
-            <span>&amp;</span>
-            <span>Nelson Rucio</span>
-          </p>
-        </div>
-        <div class="ent-family-card">
-          <span class="ent-family-label">Parents of the Groom</span>
-          <p class="ent-name">
-            <span>Jean Tormes</span>
-            <span>&amp;</span>
-            <span>Marcial Tormes</span>
-          </p>
-        </div>
-      </div>
+
+    
+
+<!-- PRINCIPAL & SECONDARY SPONSORS -->
+<section id="sponsors">
+  <div class="s-wrap">
+    <div class="s-head">
+      <span class="s-tag reveal">With Love &amp; Support</span>
+      <h2 class="s-title reveal d1">Our <em>Sponsors</em></h2>
+      <div class="s-rule reveal d2"></div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:1.2rem;">
+      <span class="s-tag" style="font-size:.72rem;">Principal Sponsors</span>
+    </div>
+    <div class="reveal" style="border:1px solid var(--gold-line);overflow:hidden;margin-bottom:3rem;">
+      <table class="principal-table">
+        <tbody>
+          <tr><td>Mr. Nevelle Subalisid</td><td>Mrs. Olive Subalisid</td></tr>
+          <tr><td>Mr. Antonino De Leon</td><td>Mrs. Merly De Leon</td></tr>
+          <tr><td>Mr. Ricky Cardoza</td><td>Mrs. Marlyn Cardoza</td></tr>
+          <tr><td>Mr. Noel Abesamis</td><td>Mrs. Lilibeth Abesamis</td></tr>
+          <tr><td>Mr. Johnny Panaun</td><td>Mrs. Rose Panaun</td></tr>
+          <tr><td>Mr. Rolando Cusi</td><td>Mrs. Roena Cusi</td></tr>
+          <tr><td>Mr. James Junsay</td><td>Mrs. Rizzo Junsay</td></tr>
+          <tr><td>Mr. Ely Cuarteros</td><td>Mrs. Elsie Cuarteros</td></tr>
+          <tr><td>Mr. Jessie Tormes</td><td>Mrs. Macrina Tormes</td></tr>
+          <tr><td>Mr. Mariano Tormes</td><td>Mrs. Amanda Tormes</td></tr>
+          <tr><td>Mr. Raymond Alvarez</td><td>Mrs. Raisa Alvarez</td></tr>
+          <tr><td>Mr. Mariano Tormes</td><td>Mrs. Amanda Tormes</td></tr>
+        </tbody>
+      </table>
     </div>
 
     <!-- BEST MAN — single, centered -->
@@ -874,39 +1190,8 @@
   </div>
 </section>
 
-<!-- PRINCIPAL & SECONDARY SPONSORS -->
-<section id="sponsors">
-  <div class="s-wrap">
-    <div class="s-head">
-      <span class="s-tag reveal">With Love &amp; Support</span>
-      <h2 class="s-title reveal d1">Our <em>Sponsors</em></h2>
-      <div class="s-rule reveal d2"></div>
-    </div>
-
-    <div style="text-align:center;margin-bottom:1.2rem;">
-      <span class="s-tag" style="font-size:.72rem;">Principal Sponsors</span>
-    </div>
-    <div class="reveal" style="border:1px solid var(--gold-line);overflow:hidden;margin-bottom:3rem;">
-      <table class="principal-table">
-        <tbody>
-          <tr><td>Mr. Nevelle Subalisid</td><td>Mrs. Olive Subalisid</td></tr>
-          <tr><td>Mr. Antonino De Leon</td><td>Mrs. Merly De Leon</td></tr>
-          <tr><td>Mr. Ricky Cardoza</td><td>Mrs. Marlyn Cardoza</td></tr>
-          <tr><td>Mr. Noel Abesamis</td><td>Mrs. Lilibeth Abesamis</td></tr>
-          <tr><td>Mr. Johnny Panaun</td><td>Mrs. Rose Panaun</td></tr>
-          <tr><td>Mr. Rolando Cusi</td><td>Mrs. Roena Cusi</td></tr>
-          <tr><td>Mr. James Junsay</td><td>Mrs. Rizzo Junsay</td></tr>
-          <tr><td>Mr. Ely Cuarteros</td><td>Mrs. Elsie Cuarteros</td></tr>
-          <tr><td>Mr. Jessie Tormes</td><td>Mrs. Macrina Tormes</td></tr>
-          <tr><td>Mr. Mariano Tormes</td><td>Mrs. Amanda Tormes</td></tr>
-          <tr><td>Mr. Raymond Alvarez</td><td>Mrs. Raisa Alvarez</td></tr>
-          <tr><td>Mr. Mariano Tormes</td><td>Mrs. Amanda Tormes</td></tr>
-        </tbody>
-      </table>
-    </div>
-
     <div style="text-align:center;margin-bottom:1rem;">
-      <span class="s-tag" style="font-size:.72rem;">Secondary Sponsors</span>
+      <span class="s-tag" style="font-size:.72rem;"><br>Secondary Sponsors</span>
     </div>
     <div class="sponsors-grid reveal">
       <div class="sponsor-item">
@@ -1035,7 +1320,7 @@
           <a href="https://maps.app.goo.gl/R6gUP7w9fUWoqxZq5" target="_blank" class="btn-gold">Get Directions ↗</a>
         </div>
         <div class="venue-map">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3860.5!2d121.0244!3d14.6955!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b6a3d30c5bad%3A0x4c3e2b3c2e1b2c1a!2sNational+Shrine+Our+Lady+of+Mercy!5e0!3m2!1sen!2sph!4v1710000000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Ceremony Venue"></iframe>
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3858.8360857858283!2d121.0415824!3d14.721857499999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b0f9730e83db%3A0xad6e38c02dedc5b3!2sNational%20Shrine%20and%20Parish%20of%20Our%20Lady%20of%20Mercy%20(Diocese%20of%20Novaliches)!5e0!3m2!1sen!2sph!4v1775202256502!5m2!1sen!2sph" width="100%" height="100%" style="border:0;display:block;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
       </div>
       <!-- RECEPTION -->
@@ -1047,145 +1332,14 @@
           <a href="https://maps.app.goo.gl/WJ2J3KYAWWjSEA4R6" target="_blank" class="btn-gold">Get Directions ↗</a>
         </div>
         <div class="venue-map">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3859.2!2d121.0388!3d14.7116!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b6b0b0c0c0c0%3A0x4c3e2b3c2e1b2c1a!2sAmaia+Steps+Novaliches!5e0!3m2!1sen!2sph!4v1710000000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Reception Venue"></iframe>
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3858.5522780993856!2d121.0372591!3d14.737886700000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b10021c10b9d%3A0xb981939964c810cc!2sAmaia%20Series%20Clubhouse!5e0!3m2!1sen!2sph!4v1775202570056!5m2!1sen!2sph" width="100%" height="100%" style="border:0;display:block;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- GALLERY -->
-<section id="gallery">
-  <div class="s-wrap">
-    <div class="s-head">
-      <span class="s-tag reveal">Captured Moments</span>
-      <h2 class="s-title reveal d1">Our <em>Gallery</em></h2>
-      <div class="s-rule reveal d2"></div>
-    </div>
 
-    <div class="gal-upload-note reveal">
-      <strong>📸 How to add your photos:</strong> Replace the <code>src=""</code> in each &lt;img&gt; tag below with your photo URLs,
-      or swap the placeholder divs with &lt;img&gt; tags. Mix portrait &amp; landscape freely — up to 10 photos supported.
-    </div>
-
-    <div class="gal-strip-wrap reveal">
-      <div class="gal-strip" id="galStrip">
-
-        <!-- PHOTO 1 — Portrait -->
-        <div class="gal-cell portrait" onclick="openLb(0)">
-          <!-- Replace below with: <img src="your-photo.jpg" alt="Photo 1"> -->
-          <div class="gal-ph">
-            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Photo 1</span>
-          </div>
-          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
-        </div>
-
-        <!-- PHOTO 2 — Landscape -->
-        <div class="gal-cell landscape" onclick="openLb(1)">
-          <div class="gal-ph">
-            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Photo 2</span>
-          </div>
-          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
-        </div>
-
-        <!-- PHOTO 3 — Portrait -->
-        <div class="gal-cell portrait" onclick="openLb(2)">
-          <div class="gal-ph">
-            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Photo 3</span>
-          </div>
-          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
-        </div>
-
-        <!-- PHOTO 4 — Landscape -->
-        <div class="gal-cell landscape" onclick="openLb(3)">
-          <div class="gal-ph">
-            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Photo 4</span>
-          </div>
-          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
-        </div>
-
-        <!-- PHOTO 5 — Portrait -->
-        <div class="gal-cell portrait" onclick="openLb(4)">
-          <div class="gal-ph">
-            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Photo 5</span>
-          </div>
-          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
-        </div>
-
-        <!-- PHOTO 6 — Landscape -->
-        <div class="gal-cell landscape" onclick="openLb(5)">
-          <div class="gal-ph">
-            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Photo 6</span>
-          </div>
-          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
-        </div>
-
-        <!-- PHOTO 7 — Portrait -->
-        <div class="gal-cell portrait" onclick="openLb(6)">
-          <div class="gal-ph">
-            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Photo 7</span>
-          </div>
-          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
-        </div>
-
-        <!-- PHOTO 8 — Landscape -->
-        <div class="gal-cell landscape" onclick="openLb(7)">
-          <div class="gal-ph">
-            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Photo 8</span>
-          </div>
-          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
-        </div>
-
-        <!-- PHOTO 9 — Portrait -->
-        <div class="gal-cell portrait" onclick="openLb(8)">
-          <div class="gal-ph">
-            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Photo 9</span>
-          </div>
-          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
-        </div>
-
-        <!-- PHOTO 10 — Landscape -->
-        <div class="gal-cell landscape" onclick="openLb(9)">
-          <div class="gal-ph">
-            <svg width="28" height="28" fill="none" stroke="#B8966A" stroke-width="1.4" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>Photo 10</span>
-          </div>
-          <div class="gal-overlay"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></div>
-        </div>
-
-      </div><!-- end gal-strip -->
-    </div><!-- end gal-strip-wrap -->
-
-    <div class="gal-arrows">
-      <button class="gal-arrow" id="galPrev" onclick="galScroll(-1)" aria-label="Previous">
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-      <button class="gal-arrow" id="galNext" onclick="galScroll(1)" aria-label="Next">
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-    </div>
-    <div class="gal-dots" id="galDots"></div>
-    <p class="gal-caption reveal">Photos will be updated closer to the big day <span>✦</span></p>
-  </div>
-</section>
-
-<!-- LIGHTBOX -->
-<div id="lightbox" role="dialog" aria-modal="true">
-  <button class="lb-close" onclick="closeLb()" aria-label="Close">×</button>
-  <button class="lb-prev" onclick="lbNav(-1)" aria-label="Previous">&#8249;</button>
-  <img id="lb-img" src="" alt="Gallery photo">
-  <button class="lb-next" onclick="lbNav(1)" aria-label="Next">&#8250;</button>
-  <span class="lb-counter" id="lb-counter"></span>
-</div>
 
 <!-- NOTES -->
 <section id="notes">
@@ -1217,6 +1371,15 @@
         <p class="note-text">The ceremony begins promptly at 12:00 PM. We recommend arriving at least 30 minutes early to be comfortably seated before the procession begins.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- HASHTAG -->
+<section id="hashtag" style="padding:2.5rem 1.5rem;">
+  <div class="hashtag-inner">
+    <span class="hashtag-label">Our Wedding Hashtag</span>
+    <span class="hashtag-text">#JAYfoundhisLLYKKAcharm</span>
+    <p class="hashtag-note">Tag your photos so we can see every beautiful moment! 📸</p>
   </div>
 </section>
 
@@ -1261,7 +1424,7 @@
       <h3 class="rsvp-heading">Will you join us?</h3>
       <p class="rsvp-body">We would be truly honoured to have you celebrate this special day with us. Please let us know if you'll be attending.</p>
       <span class="rsvp-deadline">Kindly respond by April 20, 2026</span>
-      <a href="https://forms.gle/wZbY6d34SPA2bcULA" target="_blank" rel="noopener noreferrer" class="rsvp-btn">RSVP Now ↗</a>
+      <a href="https://forms.gle/im9zWVK9ULDw9qgq6" target="_blank" rel="noopener noreferrer" class="rsvp-btn">RSVP Now ↗</a>
       <p class="rsvp-hint">Questions? Reach out to the couple for more details.</p>
     </div>
   </div>
@@ -1269,8 +1432,8 @@
 
 <!-- FOOTER -->
 <footer>
-  <span class="footer-mark">J &amp; A</span>
-  <span class="footer-names">Joven &amp; Abegail</span>
+  <span class="footer-mark">J &amp; J</span>
+  <span class="footer-names">Jaymar &amp; Jellykka</span>
   <span class="footer-date">May 02, 2026 &nbsp;·&nbsp; Quezon City</span>
   <div class="footer-rule"></div>
   <p class="footer-note">Made with love ♥ &nbsp;·&nbsp; We can't wait to celebrate with you</p>
@@ -1480,6 +1643,41 @@
     document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
     if (!isOpen) item.classList.add('open');
   }
+
+  // --- ENVELOPE & MUSIC AUTOPLAY ---
+  document.addEventListener('DOMContentLoaded', () => {
+    const envelopeOverlay = document.getElementById('envelope-overlay');
+    const envelope = document.getElementById('envelope-trigger');
+    const musicAudio = document.getElementById('bg-music'); // <-- Ensure this matches your <audio> ID
+    const musicToggleBtn = document.getElementById('music-toggle'); // Syncs with your music player
+    
+    // Lock scrolling while the envelope is visible
+    document.body.style.overflow = 'hidden';
+
+    if(envelope) {
+      envelope.addEventListener('click', () => {
+        // 1. Play animation (open flap, break seal)
+        envelope.classList.add('open');
+        
+        // 2. Autoplay the music
+        if (musicAudio) {
+          musicAudio.volume = 0.5; // Optional: Start at 50% volume
+          musicAudio.play().then(() => {
+            // Give the music player UI the 'playing' animation status
+            if (musicToggleBtn) musicToggleBtn.classList.add('playing');
+          }).catch(err => {
+            console.log('Autoplay was prevented by the browser:', err);
+          });
+        }
+        
+        // 3. Fade out overlay and restore scrolling after animation
+        setTimeout(() => {
+          envelopeOverlay.classList.add('hidden');
+          document.body.style.overflow = ''; // Re-enable scrolling
+        }, 1100); // Waits ~1.1 seconds for envelope to open before revealing site
+      });
+    }
+  });
 </script>
 </body>
 </html>
